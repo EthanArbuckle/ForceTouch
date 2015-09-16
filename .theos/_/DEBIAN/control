@@ -1,0 +1,10 @@
+Package: com.yourcompany.fbgesturetest
+Name: FBGestureTest
+Depends: mobilesubstrate
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: Ethan Arbuckle
+Author: Ethan Arbuckle
+Section: Tweaks
+Version: 0.0.1-3
+Installed-Size: 88
