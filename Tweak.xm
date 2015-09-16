@@ -44,6 +44,7 @@ void touch_event(void* target, void* refcon, IOHIDServiceRef service, IOHIDEvent
             if (hasIncreasedByPercent(10, touch.density, lastTouch.density) && hasIncreasedByPercent(5, touch.radius, lastTouch.radius) && hasIncreasedByPercent(5, touch.quality, lastTouch.quality)) {
                 
                 NSLog(@"Force touch");
+                BKSHIDServicesCancelTouchesOnMainDisplay();
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             }
 
