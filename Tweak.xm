@@ -16,6 +16,8 @@ struct rawTouch {
     float density;
     float radius;
     float quality;
+    float x;
+    float y;
 } lastTouch;
 
 BOOL hasIncreasedByPercent(float percent, float value1, float value2) {
@@ -40,10 +42,17 @@ void touch_event(void* target, void* refcon, IOHIDServiceRef service, IOHIDEvent
             touch.density = IOHIDEventGetFloatValue((__IOHIDEvent *)children[0], (IOHIDEventField)kIOHIDEventFieldDigitizerDensity);
             touch.radius = IOHIDEventGetFloatValue((__IOHIDEvent *)children[0], (IOHIDEventField)kIOHIDEventFieldDigitizerMajorRadius);
             touch.quality = IOHIDEventGetFloatValue((__IOHIDEvent *)children[0], (IOHIDEventField)kIOHIDEventFieldDigitizerQuality);
+            touch.x = IOHIDEventGetFloatValue((__IOHIDEvent *)children[0], (IOHIDEventField)kIOHIDEventFieldDigitizerX) * [[UIScreen mainScreen] bounds].size.width;
+            touch.y = IOHIDEventGetFloatValue((__IOHIDEvent *)children[0], (IOHIDEventField)kIOHIDEventFieldDigitizerY) * [[UIScreen mainScreen] bounds].size.height; 
 
             if (hasIncreasedByPercent(10, touch.density, lastTouch.density) && hasIncreasedByPercent(5, touch.radius, lastTouch.radius) && hasIncreasedByPercent(5, touch.quality, lastTouch.quality)) {
                 
-                NSLog(@"Force touch");
+                //make sure we arent being triggered by some swipe by canceling out touches that go beyond 10px of orig touch
+                if (lastTouch.x - touch.x >= 10 || lastTouch.x - touch.x <= -10) {
+                    return;
+                }
+
+                NSLog(@"Force touch at location {%f:%f} with diff %f", touch.x, touch.y, lastTouch.x - touch.x);
                 BKSHIDServicesCancelTouchesOnMainDisplay();
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             }
