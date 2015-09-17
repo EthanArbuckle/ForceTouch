@@ -48,11 +48,12 @@ void touch_event(void* target, void* refcon, IOHIDServiceRef service, IOHIDEvent
             if (hasIncreasedByPercent(10, touch.density, lastTouch.density) && hasIncreasedByPercent(5, touch.radius, lastTouch.radius) && hasIncreasedByPercent(5, touch.quality, lastTouch.quality)) {
                 
                 //make sure we arent being triggered by some swipe by canceling out touches that go beyond 10px of orig touch
-                if (lastTouch.x - touch.x >= 10 || lastTouch.x - touch.x <= -10) {
+                if ((lastTouch.x - touch.x >= 10 || lastTouch.x - touch.x <= -10) || (lastTouch.y - touch.y >= 10 || lastTouch.y - touch.y <= -10)) {
                     return;
                 }
 
-                NSLog(@"Force touch at location {%f:%f} with diff %f", touch.x, touch.y, lastTouch.x - touch.x);
+                NSLog(@"Force touch at location {%f:%f} with y diff %f", touch.x, touch.y, lastTouch.y - touch.y);
+
                 BKSHIDServicesCancelTouchesOnMainDisplay();
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             }
